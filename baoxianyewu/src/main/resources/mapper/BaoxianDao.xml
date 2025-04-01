@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.BaoxianDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.bxname as bxname
+        ,a.bxmoney as bxmoney
+        ,a.bxamountpaid as bxamountpaid
+        ,a.leixing_types as leixingTypes
+        ,a.neirong_content as neirongContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.BaoxianView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM baoxian  a
+
+        <where>
+            <if test=" params.bxname != '' and params.bxname != null and params.bxname != 'null' ">
+                and a.bxname like CONCAT('%',#{params.bxname},'%')
+            </if>
+            <if test="params.bxmoneyStart != null ">
+                <![CDATA[  and a.bxmoney >= #{params.bxmoneyStart}   ]]>
+            </if>
+            <if test="params.bxmoneyEnd != null ">
+                <![CDATA[  and a.bxmoney <= #{params.bxmoneyEnd}   ]]>
+            </if>
+            <if test="params.bxamountpaidStart != null ">
+                <![CDATA[  and a.bxamountpaid >= #{params.bxamountpaidStart}   ]]>
+            </if>
+            <if test="params.bxamountpaidEnd != null ">
+                <![CDATA[  and a.bxamountpaid <= #{params.bxamountpaidEnd}   ]]>
+            </if>
+            <if test="params.leixingTypes != null">
+                and a.leixing_types = #{params.leixingTypes}
+            </if>
+            <if test=" params.neirongContent != '' and params.neirongContent != null and params.neirongContent != 'null' ">
+                and a.neirong_content like CONCAT('%',#{params.neirongContent},'%')
+            </if>
+
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>
